@@ -148,7 +148,15 @@ export function MQTTProvider({ children }: { children: React.ReactNode }) {
     setStatus('connecting');
 
     const cfg = getStoredConfig();
-    const url = `ws://${cfg.broker}:${cfg.port}/mqtt`;
+
+    // ✅ FIX: Auto-detect protocol untuk menghindari Mixed Content error
+    // - Localhost (http://)  → pakai ws://  gunakan cfg.port (8083)
+    // - Vercel/HTTPS         → pakai wss:// gunakan port 8084
+    const isSecure =
+      typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const protocol = isSecure ? 'wss' : 'ws';
+    const port = isSecure ? 8084 : cfg.port;
+    const url = `${protocol}://${cfg.broker}:${port}/mqtt`;
 
     const client = mqtt.connect(url, {
       username: cfg.username,
