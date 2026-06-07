@@ -155,7 +155,7 @@ export function MQTTProvider({ children }: { children: React.ReactNode }) {
     const isSecure =
       typeof window !== 'undefined' && window.location.protocol === 'https:';
     const protocol = isSecure ? 'wss' : 'ws';
-    const port = isSecure ? 8084 : cfg.port;
+    const port = isSecure ? 443 : cfg.port;
     const url = `${protocol}://${cfg.broker}:${port}/mqtt`;
 
     const client = mqtt.connect(url, {
